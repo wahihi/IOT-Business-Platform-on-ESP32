@@ -34,4 +34,4 @@
 - Complete process of importing ESP-IDF to git and building the example for ESP32
   - [Quick Start](./esp-idf-guide.md)
 - Open a folder inside a container in Visual Studio Code
-  - [Quick Guide]()
+  - [Quick Guide](./vscode-container-guide.md)
