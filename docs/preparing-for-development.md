@@ -2,7 +2,7 @@
 
 ## Prerequisites
 - Docker installed on your system
-  - [Detailed docker commands](docs/Docker%20Environment%20Setup%20and%20ESP32%20Build%20Guide.md)
+  - [Detailed docker commands](docs/Docker-Environment-Setup&ESP32-Build-Guide.md)
 - ESP32 development board
 - USB cable for firmware flashing
 - Basic understanding of IOT concepts
