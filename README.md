@@ -32,7 +32,7 @@ ESP32 was chosen as the primary hardware platform due to its:
 
 ## Getting Started
 
-### 1. Preparing for Development (docs/preparing-for-development.md)
+### [1. Preparing for Development](docs/preparing-for-development.md)
 
 ## Contributing
 We welcome contributions from the community! Please feel free to submit pull requests or open issues for discussion.
