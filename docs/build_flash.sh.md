@@ -3,7 +3,7 @@
 echo "ESP32-S3 build & flash start.."
 
 echo "1. ESP32-S3 target set..."
-idf.py set-target esp32s3
+idf.py set-target esp32
 
 # echo "2. menuconfig ..."
 # idf.py menuconfig
