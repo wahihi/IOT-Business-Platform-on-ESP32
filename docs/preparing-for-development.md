@@ -32,4 +32,4 @@
     Before flashing the binary, connect the USB and make sure it is connected to /dev/ttyUSB0.
     
 - Complete process of importing ESP-IDF to git and building the example for ESP32
-  - Quick Start  
+  - [Quick Start](./esp-idf-guide.md)
