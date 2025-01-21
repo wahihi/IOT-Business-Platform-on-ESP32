@@ -30,6 +30,5 @@
     idf.py -p /dev/ttyUSB0 flash monitor
     Before flashing the binary, connect the USB and make sure it is connected to /dev/ttyUSB0.
     ```
-- Basic understanding of IOT concepts
-    
-   ```
+- Complete process of importing ESP-IDF to git and building the example for ESP32
+  - Quick Start  
