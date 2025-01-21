@@ -1,6 +1,6 @@
-# Complete Guide: Building ESP32-S3 Examples with ESP-IDF
+# Complete Guide: Building ESP32 Examples with ESP-IDF
 
-Here's a step-by-step guide to clone ESP-IDF via git and build examples for ESP32-S3:
+Here's a step-by-step guide to clone ESP-IDF via git and build examples for ESP32:
 
 1. Clone ESP-IDF Repository:
 ```bash
@@ -33,10 +33,10 @@ source ./export.sh
 cd ~/esp/esp-idf/examples/get-started/hello_world
 ```
 
-5. Configure ESP32-S3 target and build:
+5. Configure  target and build:
 ```bash
-# Set ESP32-S3 as target
-idf.py set-target esp32s3
+# Set  as target
+idf.py set-target esp32
 
 # Configure settings (if needed)
 idf.py menuconfig
@@ -81,7 +81,7 @@ sudo usermod -a -G dialout $USER
 cd ~/esp/esp-idf/examples/[desired_example_path]
 
 # Follow same process
-idf.py set-target esp32s3
+idf.py set-target esp32
 idf.py build
 # For Linux (🔴Linux specific command🔴)
 idf.py -p /dev/ttyACM0 flash monitor
