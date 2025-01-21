@@ -28,7 +28,8 @@
     idf.py menuconfig   # Adjust any necessary settings
     idf.py build
     idf.py -p /dev/ttyUSB0 flash monitor
-    Before flashing the binary, connect the USB and make sure it is connected to /dev/ttyUSB0.
     ```
+    Before flashing the binary, connect the USB and make sure it is connected to /dev/ttyUSB0.
+    
 - Complete process of importing ESP-IDF to git and building the example for ESP32
   - Quick Start  
