@@ -31,7 +31,8 @@ ESP32 was chosen as the primary hardware platform due to its:
 - Excellent performance-to-power ratio
 
 ## Getting Started
-[Coming Soon]
+
+### 1. Preparing for Development
 
 ## Contributing
 We welcome contributions from the community! Please feel free to submit pull requests or open issues for discussion.
