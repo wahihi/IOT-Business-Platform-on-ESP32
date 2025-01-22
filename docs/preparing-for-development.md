@@ -23,6 +23,7 @@
 - USB cable for firmware flashing
   - build & flash for ESP32_DevKit_V1
     ```bash
+    . /opt/esp/idf/export.sh    # path set-up idf build environment
     idf.py fullclean
     idf.py set-target esp32
     idf.py menuconfig   # Adjust any necessary settings
