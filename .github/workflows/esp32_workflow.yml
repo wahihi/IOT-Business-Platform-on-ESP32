@@ -1,131 +1,123 @@
 name: ESP32 Complete Automation
-
 on:
-  push:
-    branches: [ "main", "Without_OTA" ]
-  pull_request:
-    branches: [ "main", "Without_OTA" ]
-  workflow_dispatch:
+ push:
+   branches: [ "main" ]
+ pull_request:
+   branches: [ "main" ]
+ workflow_dispatch:
 
 env:
-  ESP_DEVICE_PORT: "/dev/ttyUSB0"
-  ESP_MONITOR_PORT: "/dev/ttyUSB0"
-  FIRMWARE_PATH: "build/esp32S3_function_create.bin"
-  EMAIL_RECIPIENT: "wahihikang@gmail.com"  # 결과를 받을 이메일 주소
+ ESP_DEVICE_PORT: "/dev/ttyUSB0"
+ ESP_MONITOR_PORT: "/dev/ttyUSB0"
+ FIRMWARE_PATH: "build/esp32S3_function_create.bin"
+ EMAIL_RECIPIENT: "wahihikang@gmail.com"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    container:
-      image: espressif/idf:v5.2
-      options: --privileged
+ build:
+   runs-on: self-hosted  # 컨테이너에서 직접 실행
+   steps:
+   - name: Checkout repository
+     uses: actions/checkout@v3
+     
+   - name: Build firmware
+     run: |
+       . /opt/esp/entrypoint.sh    # esp32_start 이미지의 entrypoint 사용
+       idf.py fullclean
+       idf.py set-target esp32s3
+       idf.py build
+       
+   - name: Upload firmware artifact
+     uses: actions/upload-artifact@v3
+     with:
+       name: firmware
+       path: build/*.bin
+       retention-days: 5
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      
-    - name: Build firmware
-      run: |
-        . $IDF_PATH/export.sh
-        idf.py set-target esp32s3
-        idf.py build
-        
-    - name: Upload firmware artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: firmware
-        path: build/*.bin
-        retention-days: 5
+ deploy-and-test:
+   needs: build
+   runs-on: self-hosted  # 같은 컨테이너에서 실행
+   steps:
+   - name: Checkout repository
+     uses: actions/checkout@v3
+     
+   - name: Download firmware artifact
+     uses: actions/download-artifact@v3
+     with:
+       name: firmware
+       path: build
+       
+   - name: Flash firmware
+     run: |
+       . /opt/esp/entrypoint.sh
+       idf.py -p ${ESP_DEVICE_PORT} flash
+       
+   - name: Wait for ESP32 boot
+     run: sleep 10
+       
+   - name: Monitor and capture logs
+     run: |
+       timeout 60s idf.py monitor -p ${ESP_MONITOR_PORT} > esp32_logs.txt 2>&1 || true
+       
+   - name: Check for expected output
+     id: test_result
+     run: |
+       if grep -q "Test Passed" esp32_logs.txt; then
+         echo "status=success" >> $GITHUB_OUTPUT
+         echo "message=Tests passed successfully" >> $GITHUB_OUTPUT
+       else
+         echo "status=failure" >> $GITHUB_OUTPUT
+         echo "message=Tests failed or incomplete" >> $GITHUB_OUTPUT
+       fi
+       
+   - name: Upload test logs
+     uses: actions/upload-artifact@v3
+     with:
+       name: test-logs
+       path: esp32_logs.txt
 
-  deploy-and-test:
-    needs: build
-    runs-on: self-hosted  # ESP32가 연결된 러너
-    container:
-      image: espressif/idf:v5.2
-      options: --privileged
+   - name: Create GitHub Issue for test results
+     if: always()
+     uses: actions/github-script@v6
+     with:
+       script: |
+         const fs = require('fs');
+         const logs = fs.readFileSync('esp32_logs.txt', 'utf8');
+         const status = '${{ steps.test_result.outputs.status }}';
+         const message = '${{ steps.test_result.outputs.message }}';
+         
+         await github.rest.issues.create({
+           owner: context.repo.owner,
+           repo: context.repo.repo,
+           title: `Test Results: ${status === 'success' ? 'PASSED' : 'FAILED'} - ${context.sha.substring(0, 7)}`,
+           body: `
+           Commit: ${context.sha}
+           Status: ${status}
+           Message: ${message}
+           
+           <details>
+           <summary>Test Logs</summary>
+           
+           \`\`\`
+           ${logs}
+           \`\`\`
+           </details>
+           `
+         });
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      
-    - name: Download firmware artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: firmware
-        path: build
-        
-    - name: Flash firmware
-      run: |
-        . $IDF_PATH/export.sh
-        idf.py -p ${ESP_DEVICE_PORT} flash
-        
-    - name: Wait for ESP32 boot
-      run: sleep 10
-        
-    - name: Monitor and capture logs
-      run: |
-        timeout 60s idf.py monitor -p ${ESP_MONITOR_PORT} > esp32_logs.txt 2>&1 || true
-        
-    - name: Check for expected output
-      id: test_result
-      run: |
-        if grep -q "Test Passed" esp32_logs.txt; then
-          echo "status=success" >> $GITHUB_OUTPUT
-          echo "message=Tests passed successfully" >> $GITHUB_OUTPUT
-        else
-          echo "status=failure" >> $GITHUB_OUTPUT
-          echo "message=Tests failed or incomplete" >> $GITHUB_OUTPUT
-        fi
-        
-    - name: Upload test logs
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-logs
-        path: esp32_logs.txt
-
-    - name: Create GitHub Issue for test results
-      if: always()
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const fs = require('fs');
-          const logs = fs.readFileSync('esp32_logs.txt', 'utf8');
-          const status = '${{ steps.test_result.outputs.status }}';
-          const message = '${{ steps.test_result.outputs.message }}';
-          
-          await github.rest.issues.create({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            title: `Test Results: ${status === 'success' ? 'PASSED' : 'FAILED'} - ${context.sha.substring(0, 7)}`,
-            body: `
-            Commit: ${context.sha}
-            Status: ${status}
-            Message: ${message}
-            
-            <details>
-            <summary>Test Logs</summary>
-            
-            \`\`\`
-            ${logs}
-            \`\`\`
-            </details>
-            `
-          });
-
-    - name: Send email notification
-      if: always()
-      uses: dawidd6/action-send-mail@v3
-      with:
-        server_address: smtp.gmail.com
-        server_port: 465
-        username: ${{ secrets.EMAIL_USERNAME }}
-        password: ${{ secrets.EMAIL_PASSWORD }}
-        subject: "ESP32 Test Results - ${{ steps.test_result.outputs.status }}"
-        body: |
-          Commit: ${{ github.sha }}
-          Status: ${{ steps.test_result.outputs.status }}
-          Message: ${{ steps.test_result.outputs.message }}
-          
-          See the GitHub issue for complete test logs.
-        to: ${{ env.EMAIL_RECIPIENT }}
-        from: GitHub Actions
+   - name: Send email notification
+     if: always()
+     uses: dawidd6/action-send-mail@v3
+     with:
+       server_address: smtp.gmail.com
+       server_port: 465
+       username: ${{ secrets.EMAIL_USERNAME }}
+       password: ${{ secrets.EMAIL_PASSWORD }}
+       subject: "ESP32 Test Results - ${{ steps.test_result.outputs.status }}"
+       body: |
+         Commit: ${{ github.sha }}
+         Status: ${{ steps.test_result.outputs.status }}
+         Message: ${{ steps.test_result.outputs.message }}
+         
+         See the GitHub issue for complete test logs.
+       to: ${{ env.EMAIL_RECIPIENT }}
+       from: GitHub Actions
