@@ -18,6 +18,7 @@
 ## Prerequisites
 - Docker installed on your system
   - [Detailed docker commands](./Docker-Environment-Setup&ESP32-Build-Guide.md)
+  - [docker safety guide](./docker-safety-guide.md)
 - ESP32 development board
   - [Simple idf build commands](./build_flash.sh.md)  
 - USB cable for firmware flashing
