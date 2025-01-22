@@ -9,7 +9,7 @@ on:
 env:
  ESP_DEVICE_PORT: "/dev/ttyUSB0"
  ESP_MONITOR_PORT: "/dev/ttyUSB0"
- FIRMWARE_PATH: "build/esp32S3_function_create.bin"
+ FIRMWARE_PATH: "examples/CI-CD-Pipeline-TEST/hello_world/build/hello_world.bin"
  EMAIL_RECIPIENT: "wahihikang@gmail.com"
 
 jobs:
@@ -23,7 +23,8 @@ jobs:
      run: |
        . /opt/esp/entrypoint.sh    # esp32_start 이미지의 entrypoint 사용
        idf.py fullclean
-       idf.py set-target esp32s3
+       idf.py set-target esp32
+       cd examples/CI-CD-Pipeline-TEST/hello_world 
        idf.py build
        
    - name: Upload firmware artifact
@@ -44,11 +45,12 @@ jobs:
      uses: actions/download-artifact@v3
      with:
        name: firmware
-       path: build
+       path: examples/CI-CD-Pipeline-TEST/hello_world/build
        
    - name: Flash firmware
      run: |
        . /opt/esp/entrypoint.sh
+       cd examples/CI-CD-Pipeline-TEST/hello_world
        idf.py -p ${ESP_DEVICE_PORT} flash
        
    - name: Wait for ESP32 boot
@@ -56,6 +58,7 @@ jobs:
        
    - name: Monitor and capture logs
      run: |
+       cd examples/CI-CD-Pipeline-TEST/hello_world
        timeout 60s idf.py monitor -p ${ESP_MONITOR_PORT} > esp32_logs.txt 2>&1 || true
        
    - name: Check for expected output
