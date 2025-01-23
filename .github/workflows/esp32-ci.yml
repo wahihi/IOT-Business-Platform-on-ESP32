@@ -45,10 +45,20 @@ jobs:
         
     - name: Debug info
       run: |
-        dmesg | grep -i ttyUSB
-        ls -l /dev/ttyUSB0
-        idf.py monitor -p ${ESP_MONITOR_PORT} --print-filter "debug" || true
+        echo "Serial port status:" > debug_logs.txt
+        ls -l /dev/ttyUSB0 >> debug_logs.txt
+        echo "Testing serial connection:" >> debug_logs.txt
+        stty -F /dev/ttyUSB0 115200 >> debug_logs.txt 2>&1
+        echo "Monitor output:" >> debug_logs.txt
+        idf.py monitor -p ${ESP_MONITOR_PORT} --print-filter "debug" >> debug_logs.txt 2>&1 || true
         
+    - name: Upload debug logs
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: debug-logs
+        path: debug_logs.txt
+    
     - name: Flash firmware
       run: |
         gpio -g write 0 0  # GPIO0 LOW for boot mode
