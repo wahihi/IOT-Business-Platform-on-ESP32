@@ -19,12 +19,13 @@ jobs:
    - name: Checkout repository
      uses: actions/checkout@v3
      with:
-       clean: true
-       path: .
+       fetch-depth: 1
+       path: ${{ github.workspace }}
      
    - name: Build firmware
      run: |
        . /opt/esp/entrypoint.sh    # esp32_start 이미지의 entrypoint 사용
+       cd ${{ github.workspace }}/examples/CI-CD-Pipeline-TEST/hello_world
        idf.py fullclean
        idf.py set-target esp32
        cd examples/CI-CD-Pipeline-TEST/hello_world 
@@ -34,7 +35,7 @@ jobs:
      uses: actions/upload-artifact@v3
      with:
        name: firmware
-       path: build/*.bin
+       path: ${{ github.workspace }}/examples/CI-CD-Pipeline-TEST/hello_world/build/*.bin
        retention-days: 5
 
  deploy-and-test:
@@ -44,8 +45,8 @@ jobs:
    - name: Checkout repository
      uses: actions/checkout@v3
      with:
-       clean: true
-       path: .
+       fetch-depth: 1
+       path: ${{ github.workspace }}
      
    - name: Download firmware artifact
      uses: actions/download-artifact@v3
