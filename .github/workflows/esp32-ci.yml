@@ -61,16 +61,16 @@ jobs:
     
     - name: Flash firmware
       run: |
-        gpio -g write 0 0  # GPIO0 LOW for boot mode
-        sleep 1
+        . /opt/esp/entrypoint.sh    # entrypoint.sh 호출 누락됨
+        cd examples/CI-CD-Pipeline-TEST/hello_world
         idf.py -p ${ESP_DEVICE_PORT} flash
-        gpio -g write 0 1  # GPIO0 HIGH for normal mode
        
     - name: Wait for ESP32 boot
       run: sleep 10
        
     - name: Monitor and capture logs
       run: |
+        . /opt/esp/entrypoint.sh    # entrypoint.sh 호출 누락됨
         cd examples/CI-CD-Pipeline-TEST/hello_world
         timeout 120s idf.py monitor -p ${ESP_MONITOR_PORT} > esp32_logs.txt 2>&1 || true
        
