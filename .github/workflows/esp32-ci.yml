@@ -70,9 +70,10 @@ jobs:
        
     - name: Monitor and capture logs
       run: |
-        . /opt/esp/entrypoint.sh    # entrypoint.sh 호출 누락됨
+        . /opt/esp/entrypoint.sh
         cd examples/CI-CD-Pipeline-TEST/hello_world
         timeout 120s idf.py monitor -p ${ESP_MONITOR_PORT} > esp32_logs.txt 2>&1 || true
+        cp esp32_logs.txt ${{ github.workspace }}/
        
     - name: Check for expected output
       id: test_result
@@ -92,12 +93,14 @@ jobs:
         path: esp32_logs.txt
 
     - name: Create GitHub Issue for test results
-      if: always()
+      if: always()      
       uses: actions/github-script@v6
+      env:
+        LOGS_PATH: ${{ github.workspace }}/esp32_logs.txt
       with:
         script: |
           const fs = require('fs');
-          const logs = fs.readFileSync('esp32_logs.txt', 'utf8');
+          const logs = fs.readFileSync(process.env.LOGS_PATH,, 'utf8');
           const status = '${{ steps.test_result.outputs.status }}';
           const message = '${{ steps.test_result.outputs.message }}';
           
