@@ -20,7 +20,7 @@ jobs:
      uses: actions/checkout@v3
      with:
        clean: true
-       fetch-depth: 0
+       path: .
      
    - name: Build firmware
      run: |
@@ -45,7 +45,7 @@ jobs:
      uses: actions/checkout@v3
      with:
        clean: true
-       fetch-depth: 0
+       path: .
      
    - name: Download firmware artifact
      uses: actions/download-artifact@v3
