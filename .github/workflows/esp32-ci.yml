@@ -42,12 +42,19 @@ jobs:
       with:
         name: firmware
         path: examples/CI-CD-Pipeline-TEST/hello_world/build
-       
+        
+    - name: Debug info
+      run: |
+        dmesg | grep -i ttyUSB
+        ls -l /dev/ttyUSB0
+        idf.py monitor -p ${ESP_MONITOR_PORT} --print-filter "debug" || true
+        
     - name: Flash firmware
       run: |
-        . /opt/esp/entrypoint.sh
-        cd examples/CI-CD-Pipeline-TEST/hello_world
+        gpio -g write 0 0  # GPIO0 LOW for boot mode
+        sleep 1
         idf.py -p ${ESP_DEVICE_PORT} flash
+        gpio -g write 0 1  # GPIO0 HIGH for normal mode
        
     - name: Wait for ESP32 boot
       run: sleep 10
@@ -55,7 +62,7 @@ jobs:
     - name: Monitor and capture logs
       run: |
         cd examples/CI-CD-Pipeline-TEST/hello_world
-        timeout 60s idf.py monitor -p ${ESP_MONITOR_PORT} > esp32_logs.txt 2>&1 || true
+        timeout 120s idf.py monitor -p ${ESP_MONITOR_PORT} > esp32_logs.txt 2>&1 || true
        
     - name: Check for expected output
       id: test_result
