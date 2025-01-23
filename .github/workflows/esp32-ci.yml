@@ -100,7 +100,7 @@ jobs:
       with:
         script: |
           const fs = require('fs');
-          const logs = fs.readFileSync(process.env.LOGS_PATH,, 'utf8');
+          const logs = fs.readFileSync(process.env.LOGS_PATH, 'utf8');
           const status = '${{ steps.test_result.outputs.status }}';
           const message = '${{ steps.test_result.outputs.message }}';
           
@@ -108,8 +108,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             title: `Test Results: ${status === 'success' ? 'PASSED' : 'FAILED'} - ${context.sha.substring(0, 7)}`,
-            body: `
-            Commit: ${context.sha}
+            body: `Commit: ${context.sha}
             Status: ${status}
             Message: ${message}
             
