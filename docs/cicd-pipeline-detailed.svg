@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Background -->
+  <rect width="800" height="600" fill="white"/>
+  <text x="400" y="40" text-anchor="middle" font-size="24" font-weight="bold">ESP32 CI/CD Pipeline</text>
+  
+  <!-- Pipeline Stages -->
+  <g id="stages">
+    <!-- Code Push -->
+    <circle cx="100" cy="150" r="40" fill="#EBF8FF" stroke="#3B82F6" stroke-width="2"/>
+    <path d="M80,150 L120,150 M100,130 L100,170 M100,130 L90,140 M100,130 L110,140" stroke="#3B82F6" stroke-width="2" fill="none"/>
+    <text x="100" y="210" text-anchor="middle">1. Code Push</text>
+    <text x="100" y="230" text-anchor="middle" font-size="10">deploy.yml 실행</text>
+    <text x="100" y="245" text-anchor="middle" font-size="10">ESP-IDF 환경 셋업</text>
+    <text x="100" y="260" text-anchor="middle" font-size="10">Docker 환경 준비</text>
+
+    <!-- Docker Build -->
+    <circle cx="250" cy="150" r="40" fill="#F3E8FF" stroke="#9333EA" stroke-width="2"/>
+    <rect x="230" y="130" width="40" height="40" stroke="#9333EA" stroke-width="2" fill="none"/>
+    <text x="250" y="210" text-anchor="middle">2. Docker Build</text>
+    <text x="250" y="230" text-anchor="middle" font-size="10">펌웨어 컴파일</text>
+    <text x="250" y="245" text-anchor="middle" font-size="10">의존성 패키지 설치</text>
+    <text x="250" y="260" text-anchor="middle" font-size="10">빌드 아티팩트 생성</text>
+
+    <!-- Run Tests -->
+    <circle cx="400" cy="150" r="40" fill="#DCFCE7" stroke="#22C55E" stroke-width="2"/>
+    <path d="M380,150 L420,150 M420,150 L410,140 M420,150 L410,160" stroke="#22C55E" stroke-width="2"/>
+    <text x="400" y="210" text-anchor="middle">3. Run Tests</text>
+    <text x="400" y="230" text-anchor="middle" font-size="10">단위 테스트 실행</text>
+    <text x="400" y="245" text-anchor="middle" font-size="10">통합 테스트 수행</text>
+    <text x="400" y="260" text-anchor="middle" font-size="10">코드 품질 검사</text>
+
+    <!-- Prepare Deploy -->
+    <circle cx="550" cy="150" r="40" fill="#FEF9C3" stroke="#EAB308" stroke-width="2"/>
+    <path d="M530,150 L570,150 M550,130 L550,170" stroke="#EAB308" stroke-width="2"/>
+    <text x="550" y="210" text-anchor="middle">4. Prepare Deploy</text>
+    <text x="550" y="230" text-anchor="middle" font-size="10">IoT Core 인증서 설정</text>
+    <text x="550" y="245" text-anchor="middle" font-size="10">OTA 패키지 준비</text>
+    <text x="550" y="260" text-anchor="middle" font-size="10">배포 스크립트 구성</text>
+
+    <!-- Deploy Complete -->
+    <circle cx="700" cy="150" r="40" fill="#CCFBF1" stroke="#14B8A6" stroke-width="2"/>
+    <path d="M680,150 L720,150 M700,130 L685,150 L700,170" stroke="#14B8A6" stroke-width="2" fill="none"/>
+    <text x="700" y="210" text-anchor="middle">5. Deploy Complete</text>
+    <text x="700" y="230" text-anchor="middle" font-size="10">펌웨어 버전 검증</text>
+    <text x="700" y="245" text-anchor="middle" font-size="10">OTA 업데이트 실행</text>
+    <text x="700" y="260" text-anchor="middle" font-size="10">배포 상태 모니터링</text>
+
+    <!-- Connecting Arrows -->
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#4B5563"/>
+      </marker>
+    </defs>
+    <path d="M140,150 L210,150" stroke="#4B5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <path d="M290,150 L360,150" stroke="#4B5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <path d="M440,150 L510,150" stroke="#4B5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <path d="M590,150 L660,150" stroke="#4B5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+  </g>
+
+  <!-- Roles -->
+  <g id="roles" transform="translate(0,320)">
+    <text x="400" y="0" text-anchor="middle" font-size="18" font-weight="bold">Roles</text>
+    <text x="400" y="30" text-anchor="middle" font-size="14">Developer → GitHub Actions → Test Runner → Deployment Service → ESP32 Device</text>
+  </g>
+
+  <!-- Note -->
+  <g id="note" transform="translate(0,380)">
+    <text x="400" y="0" text-anchor="middle" font-size="14">각 단계는 실패 시 자동 롤백되며, 모든 과정은 GitHub Actions 로그에서 추적 가능합니다.</text>
+  </g>
+</svg>
