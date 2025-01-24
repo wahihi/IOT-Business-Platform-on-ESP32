@@ -34,6 +34,7 @@ ESP32 was chosen as the primary hardware platform due to its:
 
 ### [1. Preparing for Development](docs/preparing-for-development.md)
 ### 2. Quick Start Guide for ESP32 CI/CD Pipeline Setup
+#### 2.1 About CI/CD PipeLine On ESP32 ([EN](docs/cicd-pipeline-detailed-en.svg) / [KR](docs/cicd-pipeline-detailed.svg))
 #### 2.2 Quick Start Guide ([EN](docs/CI_CD-Pipeline-Setup[en].md) / [KR](docs/CI_CD-Pipeline-Setup[kr].md))
 ## Contributing
 We welcome contributions from the community! Please feel free to submit pull requests or open issues for discussion.
