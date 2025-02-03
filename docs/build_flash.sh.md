@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "ESP32-S3 build & flash start.."
+# . /opt/esp/idf/export.sh
 
 echo "1. ESP32-S3 target set..."
 idf.py set-target esp32
