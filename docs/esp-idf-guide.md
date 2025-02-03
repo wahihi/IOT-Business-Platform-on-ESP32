@@ -25,6 +25,8 @@ cd ~/esp/esp-idf
 ```bash
 # For Linux (🔴Required for Linux users🔴)
 source ./export.sh
+or
+. /opt/esp/idf/export.sh
 ```
 
 4. Navigate to example project:
